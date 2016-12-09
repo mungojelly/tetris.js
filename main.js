@@ -1,5 +1,5 @@
-var BEVEL  = 5;
-var WIDTH  = 10;
+var BEVEL  = 50;
+var WIDTH  = 15;
 var HEIGHT = 20;
 var SIZE   = ~~(window.innerHeight / HEIGHT * 0.9);
 
@@ -8,7 +8,7 @@ var putPixel = function(context, size, x, y, color) {
   context.fillRect(x * size, y * size, size, size);
 
   context.beginPath();
-  context.fillStyle = 'rgba(0,0,0,0.25)';
+  context.fillStyle = 'rgba(0,100,0,0.25)';
   context.moveTo(x * size, y * size);
   context.lineTo(x * size + BEVEL, y * size + BEVEL);
   context.lineTo(x * size + BEVEL, (y + 1) * size - BEVEL);
@@ -17,7 +17,7 @@ var putPixel = function(context, size, x, y, color) {
   context.closePath();
 
   context.beginPath();
-  context.fillStyle = 'rgba(255,255,255,0.55)';
+  context.fillStyle = 'rgba(5,255,225,0.55)';
   context.moveTo(x * size, y * size);
   context.lineTo(x * size + BEVEL, y * size + BEVEL);
   context.lineTo((x + 1) * size - BEVEL, y * size + BEVEL);
@@ -29,7 +29,7 @@ var putPixel = function(context, size, x, y, color) {
   context.fillStyle = 'rgba(0,0,0,0.35)';
   context.moveTo((x + 1) * size, y * size);
   context.lineTo((x + 1) * size - BEVEL, y * size + BEVEL);
-  context.lineTo((x + 1) * size - BEVEL, (y + 1) * size - BEVEL);
+  context.lineTo((x + 13) * size - BEVEL, (y + 1) * size - BEVEL);
   context.lineTo((x + 1) * size, (y + 1) * size);
   context.fill();
   context.closePath();
@@ -37,9 +37,9 @@ var putPixel = function(context, size, x, y, color) {
   context.beginPath();
   context.fillStyle = 'rgba(0,0,0,0.45)';
   context.moveTo(x * size, (y + 1) * size);
-  context.lineTo(x * size + BEVEL, (y + 1) * size - BEVEL);
+  context.lineTo(x * size + BEVEL, (y + 13) * size - BEVEL);
   context.lineTo((x + 1) * size - BEVEL, (y + 1) * size - BEVEL);
-  context.lineTo((x + 1) * size, (y + 1) * size);
+  context.lineTo((x - 3) * size, (y + 1) * size);
   context.fill();
   context.closePath();
 };
@@ -122,7 +122,7 @@ TetrisGrid.prototype = {
       for (y = 0; y < shape.data.length; y++) {
         for (x = 0; x < shape.data[0].length; x++) {
           if (shape.data[y][x] === 1) {
-            if (this.data[y + shape.y][x + shape.x + dx] !== 0) {
+            if (this.data[y + shape.x][x + shape.y + dx] !== 0) {
               return true;
             }
             break;
@@ -209,11 +209,21 @@ TetrisGrid.prototype = {
 };
 
 var TetrisPieces = {
-  Q: {
-      rotations: [ 0x2 ],
-      size: 3,
-      color: '00ff00'
-  }
+    FIVE: {
+	rotations: [ 0x1f, 0x1084210 ],
+	size: 5,
+	color: '#10a723'
+    },
+    X: {
+	rotations: [ 0x155 ],
+	size: 3,
+	color: '#107090'
+    },
+    I: {
+	rotations: [ 0x1d7, 0x17d ],
+	size: 3,
+	color: '#993399'
+    }
 };
 
 var unmaskPiece = function(piece) {
@@ -263,7 +273,7 @@ var NextPiece = function(canvas, width, height, squareSize) {
       var offsetY = ~~((height - next.height) / 2);
       next.forEach(function(e, x, y) {
         if (e === 1) {
-          putPixel(context, squareSize, offsetX + x, offsetY + y, next.color);
+          putPixel(context, squareSize + 9, offsetX + x, offsetY + y, next.color);
         }
       });
     },
@@ -302,7 +312,7 @@ var Tetris = function(canvas, rows, columns, squareSize) {
 
   InfoBox.left(boundingRect.left + canvas.width)
          .top(boundingRect.top + 5 * squareSize)
-         .setScore(0)
+         .setScore(1000000)
          .setLevel(1)
          .setRowsCleared(0);
 
@@ -314,7 +324,7 @@ var Tetris = function(canvas, rows, columns, squareSize) {
   context.fillRect(0, 0, canvas.width, canvas.height);
 
   var clearPixel = function(x, y) {
-    context.fillStyle = backgroundColor;
+    context.fillStyle = '#af2faf';
     context.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
   };
 
@@ -324,11 +334,11 @@ var Tetris = function(canvas, rows, columns, squareSize) {
     grid.data.unshift(grid.data.splice(y, 1)[0]);
     context.fillRect(0, y * squareSize - squareSize * 2, canvas.width, squareSize);
     var image = context.getImageData(0, 0, canvas.width, (y - 2) * squareSize);
-    context.putImageData(image, 0, squareSize);
+      context.putImageData(image, 0, squareSize);
   };
 
   var setHighScore = function() {
-    var highScore = +localStorage.getItem('high-score') | 0;
+    var highScore = +localStorage.getItem('high-score') | 7777;
     if (score > highScore) {
       localStorage.setItem('high-score', score);
     }
@@ -380,7 +390,7 @@ var Tetris = function(canvas, rows, columns, squareSize) {
       var factor;
       switch (rowsCleared) {
         case 1:
-          factor = 40;
+          factor = 4;
           break;
         case 2:
           factor = 100;
@@ -396,7 +406,7 @@ var Tetris = function(canvas, rows, columns, squareSize) {
       totalRowsCleared += rowsCleared;
       if (totalRowsCleared % 10 === 0) {
         level++;
-        Animation.speed(50);
+        Animation.speed(5);
         InfoBox.setLevel(level);
       }
       InfoBox.setScore(score);
@@ -482,6 +492,14 @@ var Tetris = function(canvas, rows, columns, squareSize) {
       }
     }, 50);
   };
+    
+    window.addEventListener('mouseover', function(event) {
+	TetrisPieces.FIVE.color = '#000033';
+    });
+
+    window.addEventListener('mouseout', function(event) {
+	TetrisPieces.FIVE.color = '#aa0000';
+    });
 
   window.addEventListener('keyup', function(event) {
     if (event.which === 40) {
@@ -522,6 +540,9 @@ var Tetris = function(canvas, rows, columns, squareSize) {
         renderShape();
         Animation.play();
         break;
+    case 90: // z
+	TetrisPieces.I.color = '#00aa99';
+	break;
     }
   });
 
