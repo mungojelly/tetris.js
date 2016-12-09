@@ -209,40 +209,10 @@ TetrisGrid.prototype = {
 };
 
 var TetrisPieces = {
-  I: {
-    rotations: [ 0xf00, 0x2222, 0xf0, 0x4444 ],
-    size: 4,
-    color: '#00f0f0',
-  },
-  J: {
-    rotations: [ 0x138, 0xd2, 0x39, 0x96 ],
-    size: 3,
-    color: '#0000f0'
-  },
-  L: {
-    rotations: [ 0x78, 0x93, 0x3c, 0x192 ],
-    size: 3,
-    color: '#f0a000'
-  },
-  O: {
-    rotations: [ 0x660 ],
-    size: 4,
-    color: '#f0f000'
-  },
-  S: {
-    rotations: [ 0xf0, 0x99, 0x1e, 0x132 ],
-    size: 3,
-    color: '#00f000'
-  },
-  T: {
-    rotations: [ 0xb8, 0x9a, 0x3a, 0xb2 ],
-    size: 3,
-    color: '#a000f0'
-  },
-  Z: {
-    rotations: [ 0x198, 0x5a, 0x33, 0xb4 ],
-    size: 3,
-    color: '#f00000'
+  Q: {
+      rotations: [ 0x2 ],
+      size: 3,
+      color: '00ff00'
   }
 };
 
